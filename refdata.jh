@@ -1,0 +1,32 @@
+entity ActionHistory {
+	user String required
+    message String required
+    date LocalDate required
+}
+
+entity DataFile {
+    date LocalDate required,
+	logicalName String required,
+	type Type required,
+    version String required
+	path String
+}
+
+enum Type {
+    REF_DATA, FBC_GROUP
+}
+
+// defining relationships
+relationship OneToMany {
+  DataFile{actionHistory} to ActionHistory{dataFile}
+}
+
+// Set pagination options
+paginate DataFile, ActionHistory with infinite-scroll
+
+dto * with mapstruct
+
+// Set service options to all except few
+service all with serviceImpl
+// Set an angular suffix
+// angularSuffix * with 
