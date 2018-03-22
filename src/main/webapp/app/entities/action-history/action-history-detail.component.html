@@ -1,0 +1,40 @@
+
+<div *ngIf="actionHistory">
+    <h2><span>Action History</span> {{actionHistory.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span>User</span></dt>
+        <dd>
+            <span>{{actionHistory.user}}</span>
+        </dd>
+        <dt><span>Message</span></dt>
+        <dd>
+            <span>{{actionHistory.message}}</span>
+        </dd>
+        <dt><span>Date</span></dt>
+        <dd>
+            <span>{{actionHistory.date | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span>Data File</span></dt>
+        <dd>
+            <div *ngIf="actionHistory.dataFileId">
+                <a [routerLink]="['/data-file', actionHistory.dataFileId]">{{actionHistory.dataFileId}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'action-history/'+ actionHistory.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+    </button>
+</div>
