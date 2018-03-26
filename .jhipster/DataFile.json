@@ -24,6 +24,14 @@
             ]
         },
         {
+            "fieldName": "status",
+            "fieldType": "Status",
+            "fieldValues": "NEW,PROCESSING,ERROR,SUCCESS",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
             "fieldName": "type",
             "fieldType": "Type",
             "fieldValues": "REF_DATA,FBC_GROUP",
@@ -39,7 +47,11 @@
             ]
         },
         {
-            "fieldName": "path",
+            "fieldName": "sourcePath",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "tagetPath",
             "fieldType": "String"
         }
     ],

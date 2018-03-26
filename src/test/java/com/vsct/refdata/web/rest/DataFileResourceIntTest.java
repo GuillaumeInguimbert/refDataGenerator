@@ -34,6 +34,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.vsct.refdata.domain.enumeration.Status;
 import com.vsct.refdata.domain.enumeration.Type;
 /**
  * Test class for the DataFileResource REST controller.
@@ -50,14 +51,20 @@ public class DataFileResourceIntTest {
     private static final String DEFAULT_LOGICAL_NAME = "AAAAAAAAAA";
     private static final String UPDATED_LOGICAL_NAME = "BBBBBBBBBB";
 
+    private static final Status DEFAULT_STATUS = Status.NEW;
+    private static final Status UPDATED_STATUS = Status.PROCESSING;
+
     private static final Type DEFAULT_TYPE = Type.REF_DATA;
     private static final Type UPDATED_TYPE = Type.FBC_GROUP;
 
     private static final String DEFAULT_VERSION = "AAAAAAAAAA";
     private static final String UPDATED_VERSION = "BBBBBBBBBB";
 
-    private static final String DEFAULT_PATH = "AAAAAAAAAA";
-    private static final String UPDATED_PATH = "BBBBBBBBBB";
+    private static final String DEFAULT_SOURCE_PATH = "AAAAAAAAAA";
+    private static final String UPDATED_SOURCE_PATH = "BBBBBBBBBB";
+
+    private static final String DEFAULT_TAGET_PATH = "AAAAAAAAAA";
+    private static final String UPDATED_TAGET_PATH = "BBBBBBBBBB";
 
     @Autowired
     private DataFileRepository dataFileRepository;
@@ -105,9 +112,11 @@ public class DataFileResourceIntTest {
         DataFile dataFile = new DataFile()
             .date(DEFAULT_DATE)
             .logicalName(DEFAULT_LOGICAL_NAME)
+            .status(DEFAULT_STATUS)
             .type(DEFAULT_TYPE)
             .version(DEFAULT_VERSION)
-            .path(DEFAULT_PATH);
+            .sourcePath(DEFAULT_SOURCE_PATH)
+            .tagetPath(DEFAULT_TAGET_PATH);
         return dataFile;
     }
 
@@ -134,9 +143,11 @@ public class DataFileResourceIntTest {
         DataFile testDataFile = dataFileList.get(dataFileList.size() - 1);
         assertThat(testDataFile.getDate()).isEqualTo(DEFAULT_DATE);
         assertThat(testDataFile.getLogicalName()).isEqualTo(DEFAULT_LOGICAL_NAME);
+        assertThat(testDataFile.getStatus()).isEqualTo(DEFAULT_STATUS);
         assertThat(testDataFile.getType()).isEqualTo(DEFAULT_TYPE);
         assertThat(testDataFile.getVersion()).isEqualTo(DEFAULT_VERSION);
-        assertThat(testDataFile.getPath()).isEqualTo(DEFAULT_PATH);
+        assertThat(testDataFile.getSourcePath()).isEqualTo(DEFAULT_SOURCE_PATH);
+        assertThat(testDataFile.getTagetPath()).isEqualTo(DEFAULT_TAGET_PATH);
     }
 
     @Test
@@ -184,6 +195,25 @@ public class DataFileResourceIntTest {
         int databaseSizeBeforeTest = dataFileRepository.findAll().size();
         // set the field null
         dataFile.setLogicalName(null);
+
+        // Create the DataFile, which fails.
+        DataFileDTO dataFileDTO = dataFileMapper.toDto(dataFile);
+
+        restDataFileMockMvc.perform(post("/api/data-files")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(dataFileDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<DataFile> dataFileList = dataFileRepository.findAll();
+        assertThat(dataFileList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkStatusIsRequired() throws Exception {
+        int databaseSizeBeforeTest = dataFileRepository.findAll().size();
+        // set the field null
+        dataFile.setStatus(null);
 
         // Create the DataFile, which fails.
         DataFileDTO dataFileDTO = dataFileMapper.toDto(dataFile);
@@ -248,9 +278,11 @@ public class DataFileResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(dataFile.getId().intValue())))
             .andExpect(jsonPath("$.[*].date").value(hasItem(DEFAULT_DATE.toString())))
             .andExpect(jsonPath("$.[*].logicalName").value(hasItem(DEFAULT_LOGICAL_NAME.toString())))
+            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
             .andExpect(jsonPath("$.[*].version").value(hasItem(DEFAULT_VERSION.toString())))
-            .andExpect(jsonPath("$.[*].path").value(hasItem(DEFAULT_PATH.toString())));
+            .andExpect(jsonPath("$.[*].sourcePath").value(hasItem(DEFAULT_SOURCE_PATH.toString())))
+            .andExpect(jsonPath("$.[*].tagetPath").value(hasItem(DEFAULT_TAGET_PATH.toString())));
     }
 
     @Test
@@ -266,9 +298,11 @@ public class DataFileResourceIntTest {
             .andExpect(jsonPath("$.id").value(dataFile.getId().intValue()))
             .andExpect(jsonPath("$.date").value(DEFAULT_DATE.toString()))
             .andExpect(jsonPath("$.logicalName").value(DEFAULT_LOGICAL_NAME.toString()))
+            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
             .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()))
             .andExpect(jsonPath("$.version").value(DEFAULT_VERSION.toString()))
-            .andExpect(jsonPath("$.path").value(DEFAULT_PATH.toString()));
+            .andExpect(jsonPath("$.sourcePath").value(DEFAULT_SOURCE_PATH.toString()))
+            .andExpect(jsonPath("$.tagetPath").value(DEFAULT_TAGET_PATH.toString()));
     }
 
     @Test
@@ -293,9 +327,11 @@ public class DataFileResourceIntTest {
         updatedDataFile
             .date(UPDATED_DATE)
             .logicalName(UPDATED_LOGICAL_NAME)
+            .status(UPDATED_STATUS)
             .type(UPDATED_TYPE)
             .version(UPDATED_VERSION)
-            .path(UPDATED_PATH);
+            .sourcePath(UPDATED_SOURCE_PATH)
+            .tagetPath(UPDATED_TAGET_PATH);
         DataFileDTO dataFileDTO = dataFileMapper.toDto(updatedDataFile);
 
         restDataFileMockMvc.perform(put("/api/data-files")
@@ -309,9 +345,11 @@ public class DataFileResourceIntTest {
         DataFile testDataFile = dataFileList.get(dataFileList.size() - 1);
         assertThat(testDataFile.getDate()).isEqualTo(UPDATED_DATE);
         assertThat(testDataFile.getLogicalName()).isEqualTo(UPDATED_LOGICAL_NAME);
+        assertThat(testDataFile.getStatus()).isEqualTo(UPDATED_STATUS);
         assertThat(testDataFile.getType()).isEqualTo(UPDATED_TYPE);
         assertThat(testDataFile.getVersion()).isEqualTo(UPDATED_VERSION);
-        assertThat(testDataFile.getPath()).isEqualTo(UPDATED_PATH);
+        assertThat(testDataFile.getSourcePath()).isEqualTo(UPDATED_SOURCE_PATH);
+        assertThat(testDataFile.getTagetPath()).isEqualTo(UPDATED_TAGET_PATH);
     }
 
     @Test
