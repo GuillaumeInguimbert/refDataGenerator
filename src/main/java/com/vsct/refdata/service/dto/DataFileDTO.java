@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
+import com.vsct.refdata.domain.enumeration.Status;
 import com.vsct.refdata.domain.enumeration.Type;
 
 /**
@@ -23,12 +24,17 @@ public class DataFileDTO implements Serializable {
     private String logicalName;
 
     @NotNull
+    private Status status;
+
+    @NotNull
     private Type type;
 
     @NotNull
     private String version;
 
-    private String path;
+    private String sourcePath;
+
+    private String tagetPath;
 
     public Long getId() {
         return id;
@@ -54,6 +60,14 @@ public class DataFileDTO implements Serializable {
         this.logicalName = logicalName;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     public Type getType() {
         return type;
     }
@@ -70,12 +84,20 @@ public class DataFileDTO implements Serializable {
         this.version = version;
     }
 
-    public String getPath() {
-        return path;
+    public String getSourcePath() {
+        return sourcePath;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setSourcePath(String sourcePath) {
+        this.sourcePath = sourcePath;
+    }
+
+    public String getTagetPath() {
+        return tagetPath;
+    }
+
+    public void setTagetPath(String tagetPath) {
+        this.tagetPath = tagetPath;
     }
 
     @Override
@@ -105,9 +127,11 @@ public class DataFileDTO implements Serializable {
             "id=" + getId() +
             ", date='" + getDate() + "'" +
             ", logicalName='" + getLogicalName() + "'" +
+            ", status='" + getStatus() + "'" +
             ", type='" + getType() + "'" +
             ", version='" + getVersion() + "'" +
-            ", path='" + getPath() + "'" +
+            ", sourcePath='" + getSourcePath() + "'" +
+            ", tagetPath='" + getTagetPath() + "'" +
             "}";
     }
 }

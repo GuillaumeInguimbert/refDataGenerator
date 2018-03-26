@@ -7,13 +7,19 @@ entity ActionHistory {
 entity DataFile {
     date LocalDate required,
 	logicalName String required,
+    status Status required,
 	type Type required,
-    version String required
-	path String
+    version String required,
+	sourcePath String,
+    tagetPath String
 }
 
 enum Type {
     REF_DATA, FBC_GROUP
+}
+
+enum Status {
+    NEW, PROCESSING, ERROR, SUCCESS
 }
 
 // defining relationships

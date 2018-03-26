@@ -13,6 +13,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
 
+import com.vsct.refdata.domain.enumeration.Status;
+
 import com.vsct.refdata.domain.enumeration.Type;
 
 /**
@@ -39,6 +41,11 @@ public class DataFile implements Serializable {
 
     @NotNull
     @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private Status status;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "jhi_type", nullable = false)
     private Type type;
 
@@ -46,8 +53,11 @@ public class DataFile implements Serializable {
     @Column(name = "version", nullable = false)
     private String version;
 
-    @Column(name = "path")
-    private String path;
+    @Column(name = "source_path")
+    private String sourcePath;
+
+    @Column(name = "taget_path")
+    private String tagetPath;
 
     @OneToMany(mappedBy = "dataFile")
     @JsonIgnore
@@ -89,6 +99,19 @@ public class DataFile implements Serializable {
         this.logicalName = logicalName;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public DataFile status(Status status) {
+        this.status = status;
+        return this;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     public Type getType() {
         return type;
     }
@@ -115,17 +138,30 @@ public class DataFile implements Serializable {
         this.version = version;
     }
 
-    public String getPath() {
-        return path;
+    public String getSourcePath() {
+        return sourcePath;
     }
 
-    public DataFile path(String path) {
-        this.path = path;
+    public DataFile sourcePath(String sourcePath) {
+        this.sourcePath = sourcePath;
         return this;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setSourcePath(String sourcePath) {
+        this.sourcePath = sourcePath;
+    }
+
+    public String getTagetPath() {
+        return tagetPath;
+    }
+
+    public DataFile tagetPath(String tagetPath) {
+        this.tagetPath = tagetPath;
+        return this;
+    }
+
+    public void setTagetPath(String tagetPath) {
+        this.tagetPath = tagetPath;
     }
 
     public Set<ActionHistory> getActionHistories() {
@@ -180,9 +216,11 @@ public class DataFile implements Serializable {
             "id=" + getId() +
             ", date='" + getDate() + "'" +
             ", logicalName='" + getLogicalName() + "'" +
+            ", status='" + getStatus() + "'" +
             ", type='" + getType() + "'" +
             ", version='" + getVersion() + "'" +
-            ", path='" + getPath() + "'" +
+            ", sourcePath='" + getSourcePath() + "'" +
+            ", tagetPath='" + getTagetPath() + "'" +
             "}";
     }
 }
